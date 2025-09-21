@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 const FundDashboard: React.FC = () => {
   const topFunds = [
@@ -131,8 +132,8 @@ const FundDashboard: React.FC = () => {
                   <Button size="sm" className="flex-1 bg-gradient-primary text-primary-foreground">
                     Invest Now
                   </Button>
-                  <Button size="sm" variant="outline" className="border-primary text-primary">
-                    Details
+                  <Button size="sm" variant="outline" className="border-primary text-primary" asChild>
+                    <Link to={`/funds/${fund.id}`}>Details</Link>
                   </Button>
                 </div>
               </div>
@@ -141,8 +142,8 @@ const FundDashboard: React.FC = () => {
         </div>
         
         <div className="text-center mt-12">
-          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5">
-            View All Funds →
+          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5" asChild>
+            <Link to="/funds">View All Funds →</Link>
           </Button>
         </div>
       </div>

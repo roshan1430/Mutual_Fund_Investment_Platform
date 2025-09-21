@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 import heroImage from '@/assets/hero-bg.jpg';
 
 const HeroSection: React.FC = () => {
@@ -32,11 +33,11 @@ const HeroSection: React.FC = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-lg">
-                Start Investing
+              <Button size="lg" className="bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-lg" asChild>
+                <Link to="/funds">Start Investing</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5">
-                Learn More
+              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5" asChild>
+                <Link to="/analytics">Learn More</Link>
               </Button>
             </div>
             

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const RoleFeatures: React.FC = () => {
   const roles = [
@@ -125,8 +126,9 @@ const RoleFeatures: React.FC = () => {
                       ? 'bg-gradient-primary text-primary-foreground' 
                       : 'bg-gradient-success text-success-foreground'
                   } hover:opacity-90`}
+                  asChild
                 >
-                  Get Started as {role.title.replace('For ', '')}
+                  <Link to="/dashboard">Get Started as {role.title.replace('For ', '')}</Link>
                 </Button>
               </div>
             </Card>
