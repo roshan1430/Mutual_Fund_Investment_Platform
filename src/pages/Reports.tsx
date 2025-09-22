@@ -98,6 +98,13 @@ const Reports = () => {
                       size="sm" 
                       className="flex items-center space-x-1"
                       disabled={report.status !== 'Ready'}
+                      onClick={() => {
+                        // Download functionality
+                        const link = document.createElement('a');
+                        link.href = `/api/reports/${report.id}/download`;
+                        link.download = `${report.title.replace(/\s+/g, '_')}.pdf`;
+                        link.click();
+                      }}
                     >
                       <Download className="h-4 w-4" />
                       <span>Download</span>
@@ -116,15 +123,36 @@ const Reports = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-24 flex flex-col items-center justify-center space-y-2"
+                onClick={() => {
+                  // Generate performance report
+                  alert('Generating Performance Report...');
+                }}
+              >
                 <FileText className="h-6 w-6" />
                 <span>Performance Report</span>
               </Button>
-              <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-24 flex flex-col items-center justify-center space-y-2"
+                onClick={() => {
+                  // Generate tax report
+                  alert('Generating Tax Report...');
+                }}
+              >
                 <FileText className="h-6 w-6" />
                 <span>Tax Report</span>
               </Button>
-              <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-24 flex flex-col items-center justify-center space-y-2"
+                onClick={() => {
+                  // Generate holdings report
+                  alert('Generating Holdings Report...');
+                }}
+              >
                 <FileText className="h-6 w-6" />
                 <span>Holdings Report</span>
               </Button>
