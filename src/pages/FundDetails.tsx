@@ -126,7 +126,7 @@ const FundDetails = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Rating</span>
                   <div className="flex items-center space-x-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <Star className="h-4 w-4 fill-primary text-primary" />
                     <span className="font-medium">{fund.rating}/5</span>
                   </div>
                 </div>
