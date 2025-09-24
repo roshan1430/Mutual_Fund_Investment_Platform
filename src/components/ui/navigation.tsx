@@ -31,6 +31,9 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
           <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
             <Link to="/reports">Reports</Link>
           </Button>
+          <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
+            <Link to="/sip-calculator">SIP Calculator</Link>
+          </Button>
         </div>
       </div>
       

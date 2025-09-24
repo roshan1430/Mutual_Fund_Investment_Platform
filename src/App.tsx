@@ -10,6 +10,7 @@ import Analytics from "./pages/Analytics";
 import Reports from "./pages/Reports";
 import SignIn from "./pages/SignIn";
 import FundDetails from "./pages/FundDetails";
+import SIPCalculatorPage from "./pages/SIPCalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/funds/:id" element={<FundDetails />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/sip-calculator" element={<SIPCalculatorPage />} />
           <Route path="/signin" element={<SignIn />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

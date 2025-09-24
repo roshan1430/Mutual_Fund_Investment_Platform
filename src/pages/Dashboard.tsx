@@ -98,9 +98,26 @@ const Dashboard = () => {
               <CardDescription>Manage your investments</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full">Invest in New Fund</Button>
-              <Button variant="outline" className="w-full">Rebalance Portfolio</Button>
-              <Button variant="outline" className="w-full">Download Reports</Button>
+              <Button 
+                className="w-full" 
+                onClick={() => window.location.href = '/funds'}
+              >
+                Invest in New Fund
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => alert('Portfolio rebalancing initiated! You will receive an email confirmation shortly.')}
+              >
+                Rebalance Portfolio
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => window.location.href = '/reports'}
+              >
+                Download Reports
+              </Button>
             </CardContent>
           </Card>
         </div>

@@ -27,7 +27,16 @@ const SignIn = () => {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" placeholder="Enter your password" />
               </div>
-              <Button className="w-full">Sign In</Button>
+              <Button 
+                className="w-full"
+                onClick={() => {
+                  // Simple demo login - in real app, validate credentials
+                  alert('Login successful! Redirecting to dashboard...');
+                  setTimeout(() => window.location.href = '/dashboard', 1000);
+                }}
+              >
+                Sign In
+              </Button>
             </div>
 
             <div className="text-center">
@@ -39,10 +48,18 @@ const SignIn = () => {
             <Separator />
 
             <div className="space-y-4">
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => alert('Google OAuth integration would be implemented here')}
+              >
                 Continue with Google
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => alert('LinkedIn OAuth integration would be implemented here')}
+              >
                 Continue with LinkedIn
               </Button>
             </div>
