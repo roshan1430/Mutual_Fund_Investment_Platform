@@ -21,7 +21,7 @@ const Dashboard = () => {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
+              <div className="text-2xl font-bold">₹45,231.89</div>
               <p className="text-xs text-muted-foreground">+20.1% from last month</p>
             </CardContent>
           </Card>
@@ -74,7 +74,7 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground">Purchased</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">$2,500</p>
+                    <p className="font-medium">₹2,500</p>
                     <p className="text-sm text-muted-foreground">2 days ago</p>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground">Dividend</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium text-success">+$125</p>
+                    <p className="font-medium text-success">+₹125</p>
                     <p className="text-sm text-muted-foreground">1 week ago</p>
                   </div>
                 </div>
