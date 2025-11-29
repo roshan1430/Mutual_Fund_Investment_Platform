@@ -14,7 +14,210 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      demo_portfolios: {
+        Row: {
+          average_buy_price: number
+          created_at: string | null
+          current_price: number
+          current_value: number
+          fund_name: string
+          fund_type: string
+          id: string
+          returns: number
+          returns_percentage: number
+          total_invested: number
+          units: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          average_buy_price: number
+          created_at?: string | null
+          current_price: number
+          current_value?: number
+          fund_name: string
+          fund_type: string
+          id?: string
+          returns?: number
+          returns_percentage?: number
+          total_invested?: number
+          units?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          average_buy_price?: number
+          created_at?: string | null
+          current_price?: number
+          current_value?: number
+          fund_name?: string
+          fund_type?: string
+          id?: string
+          returns?: number
+          returns_percentage?: number
+          total_invested?: number
+          units?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      investment_goals: {
+        Row: {
+          category: string
+          created_at: string | null
+          current_amount: number
+          goal_name: string
+          id: string
+          status: string
+          target_amount: number
+          target_date: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          current_amount?: number
+          goal_name: string
+          id?: string
+          status?: string
+          target_amount: number
+          target_date: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          current_amount?: number
+          goal_name?: string
+          id?: string
+          status?: string
+          target_amount?: number
+          target_date?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      portfolios: {
+        Row: {
+          average_buy_price: number
+          created_at: string | null
+          current_price: number
+          current_value: number
+          fund_name: string
+          fund_type: string
+          id: string
+          returns: number
+          returns_percentage: number
+          total_invested: number
+          units: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          average_buy_price: number
+          created_at?: string | null
+          current_price: number
+          current_value?: number
+          fund_name: string
+          fund_type: string
+          id?: string
+          returns?: number
+          returns_percentage?: number
+          total_invested?: number
+          units?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          average_buy_price?: number
+          created_at?: string | null
+          current_price?: number
+          current_value?: number
+          fund_name?: string
+          fund_type?: string
+          id?: string
+          returns?: number
+          returns_percentage?: number
+          total_invested?: number
+          units?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          fund_name: string
+          id: string
+          is_demo: boolean | null
+          price_per_unit: number
+          status: string
+          total_amount: number
+          transaction_date: string | null
+          transaction_type: string
+          units: number
+          user_id: string
+        }
+        Insert: {
+          fund_name: string
+          id?: string
+          is_demo?: boolean | null
+          price_per_unit: number
+          status?: string
+          total_amount: number
+          transaction_date?: string | null
+          transaction_type: string
+          units: number
+          user_id: string
+        }
+        Update: {
+          fund_name?: string
+          id?: string
+          is_demo?: boolean | null
+          price_per_unit?: number
+          status?: string
+          total_amount?: number
+          transaction_date?: string | null
+          transaction_type?: string
+          units?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
