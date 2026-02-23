@@ -1,13 +1,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface NavigationProps {
   className?: string;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ className }) => {
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/signin');
+  };
+
   return (
     <nav className={cn("flex items-center justify-between p-6 bg-card/50 backdrop-blur-sm border-b border-border", className)}>
       <div className="flex items-center space-x-8">
@@ -38,12 +47,21 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
       </div>
       
       <div className="flex items-center space-x-4">
-        <Button variant="outline" className="hidden sm:inline-flex" asChild>
-          <Link to="/signin">Sign In</Link>
-        </Button>
-        <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90" asChild>
-          <Link to="/dashboard">Get Started</Link>
-        </Button>
+        {isAuthenticated ? (
+          <>
+            <span className="text-sm text-muted-foreground hidden sm:inline">Hi, {user?.name}</span>
+            <Button variant="outline" onClick={handleLogout}>Logout</Button>
+          </>
+        ) : (
+          <>
+            <Button variant="outline" className="hidden sm:inline-flex" asChild>
+              <Link to="/signin">Sign In</Link>
+            </Button>
+            <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90" asChild>
+              <Link to="/register">Get Started</Link>
+            </Button>
+          </>
+        )}
       </div>
     </nav>
   );

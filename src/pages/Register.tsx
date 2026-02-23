@@ -7,19 +7,29 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-const SignIn = () => {
+const Register = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { register } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = login(email, password);
+    if (password !== confirmPassword) {
+      toast({ title: 'Error', description: 'Passwords do not match', variant: 'destructive' });
+      return;
+    }
+    if (password.length < 6) {
+      toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
+      return;
+    }
+    const result = register(name, email, password);
     if (result.success) {
-      toast({ title: 'Welcome back!', description: 'Redirecting to dashboard...' });
-      navigate('/dashboard');
+      toast({ title: 'Success', description: 'Account created! Please sign in.' });
+      navigate('/signin');
     } else {
       toast({ title: 'Error', description: result.message, variant: 'destructive' });
     }
@@ -34,26 +44,34 @@ const SignIn = () => {
               <span className="text-primary-foreground font-bold">MF</span>
             </div>
           </div>
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
-          <CardDescription>Sign in to your MutualFunds Pro account</CardDescription>
+          <CardTitle className="text-2xl">Create Account</CardTitle>
+          <CardDescription>Join MutualFunds Pro to start investing</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" required />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required />
+              <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="john@example.com" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
+              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm password" required />
             </div>
             <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90">
-              Sign In
+              Create Account
             </Button>
           </form>
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-primary hover:underline font-medium">Sign Up</Link>
+            Already have an account?{' '}
+            <Link to="/signin" className="text-primary hover:underline font-medium">Sign In</Link>
           </p>
         </CardContent>
       </Card>
@@ -61,4 +79,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Register;
