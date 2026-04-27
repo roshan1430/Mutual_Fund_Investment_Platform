@@ -1,5 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser, registerUser } from '@/lib/api';
+import {
+  loginUser,
+  registerUser,
+  resendVerification,
+  resetPassword,
+  requestPasswordReset,
+  verifyEmail,
+  verifyLoginOtp,
+} from '@/lib/api';
 
 const AuthContext = createContext(undefined);
 
@@ -30,15 +38,33 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  const getUsers = () => {
-    const data = localStorage.getItem('mf_users');
-    return data ? JSON.parse(data) : [];
+  const register = async (name, email, password, role = 'INVESTOR') => {
+    try {
+      const response = await registerUser({ name, email, password, role });
+      return {
+        success: response.success,
+        message: response.message,
+        requiresVerification: response.requiresVerification,
+        email: response.email || email,
+      };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   };
 
-  const register = async (name, email, password) => {
+  const confirmEmail = async (email, code) => {
     try {
-      await registerUser({ name, email, password });
-      return { success: true, message: 'Registration successful' };
+      const response = await verifyEmail({ email, code });
+      return { success: response.success, message: response.message };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  const resendCode = async (email) => {
+    try {
+      const response = await resendVerification({ email });
+      return { success: response.success, message: response.message };
     } catch (error) {
       return { success: false, message: error.message };
     }
@@ -53,6 +79,49 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('mf_current_user', currentValue);
         sessionStorage.setItem('mf_current_user', currentValue);
       }
+      return {
+        success: response.success,
+        message: response.message,
+        email: response.email || email,
+        nextStep: response.nextStep,
+      };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  const completeLogin = async (email, otp) => {
+    try {
+      const response = await verifyLoginOtp({ email, otp });
+      if (response.user) {
+        setUser(response.user);
+        const currentValue = JSON.stringify(response.user);
+        localStorage.setItem('mf_current_user', currentValue);
+        sessionStorage.setItem('mf_current_user', currentValue);
+      }
+      return { success: response.success, message: response.message, user: response.user };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  const forgotPassword = async (email) => {
+    try {
+      const response = await requestPasswordReset({ email });
+      return {
+        success: response.success,
+        message: response.message,
+        email: response.email || email,
+        nextStep: response.nextStep,
+      };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  const confirmPasswordReset = async (email, otp, newPassword) => {
+    try {
+      const response = await resetPassword({ email, otp, newPassword });
       return { success: response.success, message: response.message };
     } catch (error) {
       return { success: false, message: error.message };
@@ -66,7 +135,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      completeLogin,
+      register,
+      confirmEmail,
+      resendCode,
+      forgotPassword,
+      confirmPasswordReset,
+      logout,
+      isAuthenticated: !!user,
+      isAdmin: user?.role === 'ADMIN',
+    }}>
       {children}
     </AuthContext.Provider>
   );

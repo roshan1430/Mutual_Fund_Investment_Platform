@@ -23,7 +23,32 @@ export const registerUser = (payload) => request('/auth/register', {
   body: JSON.stringify(payload),
 });
 
+export const verifyEmail = (payload) => request('/auth/verify-email', {
+  method: 'POST',
+  body: JSON.stringify(payload),
+});
+
+export const resendVerification = (payload) => request('/auth/resend-verification', {
+  method: 'POST',
+  body: JSON.stringify(payload),
+});
+
 export const loginUser = (payload) => request('/auth/login', {
+  method: 'POST',
+  body: JSON.stringify(payload),
+});
+
+export const verifyLoginOtp = (payload) => request('/auth/verify-login', {
+  method: 'POST',
+  body: JSON.stringify(payload),
+});
+
+export const requestPasswordReset = (payload) => request('/auth/forgot-password', {
+  method: 'POST',
+  body: JSON.stringify(payload),
+});
+
+export const resetPassword = (payload) => request('/auth/reset-password', {
   method: 'POST',
   body: JSON.stringify(payload),
 });
@@ -55,6 +80,11 @@ export const downloadReport = async (id) => {
   const blob = await response.blob();
   return blob;
 };
+export const fetchAdminUsers = () => request('/admin/users');
+export const deleteAdminUser = (id) => request(`/admin/users/${id}`, {
+  method: 'DELETE',
+});
+
 export const calculateSip = (payload) => request('/sip/calculate', {
   method: 'POST',
   body: JSON.stringify(payload),

@@ -27,7 +27,7 @@ const Navigation = ({ className }) => {
           <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
             <Link to="/">Home</Link>
           </Button>
-          {isAuthenticated && (
+          {isAuthenticated && !user?.role?.includes('ADMIN') && (
             <>
               <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
                 <Link to="/dashboard">Dashboard</Link>
@@ -48,6 +48,11 @@ const Navigation = ({ className }) => {
                 <Link to="/reports">Reports</Link>
               </Button>
             </>
+          )}
+          {isAuthenticated && user?.role?.includes('ADMIN') && (
+            <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
+              <Link to="/admin/dashboard">Admin Portal</Link>
+            </Button>
           )}
         </div>
       </div>

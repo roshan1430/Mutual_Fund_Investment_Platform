@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-const SignIn = () => {
+const AdminSignIn = () => {
   const [step, setStep] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,17 +16,13 @@ const SignIn = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const auth = useAuth();
-  const { login, completeLogin, forgotPassword, confirmPasswordReset } = auth;
+  const { login, completeLogin, forgotPassword, confirmPasswordReset, logout } = auth;
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
-      if (auth.isAdmin) {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+    if (auth.isAuthenticated && auth.isAdmin) {
+      navigate('/admin/dashboard');
     }
   }, [auth.isAuthenticated, auth.isAdmin, navigate]);
 
@@ -37,8 +33,13 @@ const SignIn = () => {
       setStep('login-otp');
       toast({ title: 'OTP sent', description: result.message });
     } else if (result.success) {
-      toast({ title: 'Welcome back!', description: 'Redirecting to dashboard...' });
-      navigate('/dashboard');
+      if (result.user?.role !== 'ADMIN') {
+        logout();
+        toast({ title: 'Unauthorized', description: 'This portal is for administrators only.', variant: 'destructive' });
+        return;
+      }
+      toast({ title: 'Welcome Admin!', description: 'Redirecting to admin dashboard...' });
+      navigate('/admin/dashboard');
     } else {
       toast({
         title: result.message?.toLowerCase().includes('verify') ? 'Verification needed' : 'Error',
@@ -52,8 +53,13 @@ const SignIn = () => {
     e.preventDefault();
     const result = await completeLogin(email, loginOtp);
     if (result.success) {
-      toast({ title: 'Welcome back!', description: 'Redirecting to dashboard...' });
-      navigate('/dashboard');
+      if (result.user?.role !== 'ADMIN') {
+        logout();
+        toast({ title: 'Unauthorized', description: 'This portal is for administrators only.', variant: 'destructive' });
+        return;
+      }
+      toast({ title: 'Welcome Admin!', description: 'Redirecting to admin dashboard...' });
+      navigate('/admin/dashboard');
     } else {
       toast({ title: 'Error', description: result.message, variant: 'destructive' });
     }
@@ -113,21 +119,21 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--background)' }}>
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md border-primary/20 shadow-lg shadow-primary/5">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">MF</span>
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold">A</span>
             </div>
           </div>
-          <CardTitle className="text-2xl">
-            {step === 'signin' && 'Welcome Back'}
-            {step === 'login-otp' && 'Enter Login OTP'}
-            {step === 'reset-password' && 'Reset Password'}
+          <CardTitle className="text-2xl text-primary">
+            {step === 'signin' && 'Admin Portal'}
+            {step === 'login-otp' && 'Admin Verification'}
+            {step === 'reset-password' && 'Reset Admin Password'}
           </CardTitle>
           <CardDescription>
-            {step === 'signin' && 'Sign in to your MutualFunds Pro account'}
-            {step === 'login-otp' && `We sent a login OTP to ${email}`}
+            {step === 'signin' && 'Secure access for platform administrators'}
+            {step === 'login-otp' && `We sent a secure OTP to ${email}`}
             {step === 'reset-password' && `Enter the reset OTP sent to ${email}`}
           </CardDescription>
         </CardHeader>
@@ -135,15 +141,15 @@ const SignIn = () => {
           {step === 'signin' && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required />
+                <Label htmlFor="email">Administrator Email</Label>
+                <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@example.com" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90">
-                Continue
+              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:opacity-90">
+                Sign In as Admin
               </Button>
               <Button type="button" variant="ghost" className="w-full" onClick={handleForgotPassword}>
                 Forgot Password?
@@ -154,11 +160,11 @@ const SignIn = () => {
           {step === 'login-otp' && (
             <form onSubmit={handleLoginOtp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="loginOtp">Login OTP</Label>
+                <Label htmlFor="loginOtp">Verification Code</Label>
                 <Input id="loginOtp" value={loginOtp} onChange={e => setLoginOtp(e.target.value)} placeholder="Enter 6-digit OTP" maxLength={6} required />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90">
-                Verify and Sign In
+              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:opacity-90">
+                Verify and Access
               </Button>
               <Button type="button" variant="outline" className="w-full" onClick={() => setStep('signin')}>
                 Back
@@ -180,7 +186,7 @@ const SignIn = () => {
                 <Label htmlFor="confirmPassword">Confirm New Password</Label>
                 <Input id="confirmPassword" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm new password" required />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90">
+              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:opacity-90">
                 Reset Password
               </Button>
               <Button type="button" variant="secondary" className="w-full" onClick={handleResendResetOtp}>
@@ -191,24 +197,20 @@ const SignIn = () => {
               </Button>
             </form>
           )}
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-primary hover:underline font-medium">Sign Up</Link>
-          </p>
+          <div className="text-center text-sm text-muted-foreground mt-6 space-y-2">
+            <p>
+              Need an admin account?{' '}
+              <Link to="/admin-register" className="text-primary hover:underline font-medium">Register as Admin</Link>
+            </p>
+            <p>
+              Not an administrator?{' '}
+              <Link to="/signin" className="text-primary hover:underline font-medium">Investor Sign In</Link>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default SignIn;
-
-
-
-
-
-
-
-
-
-
+export default AdminSignIn;

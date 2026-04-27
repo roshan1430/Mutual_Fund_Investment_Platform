@@ -20,6 +20,11 @@ backend/target
 backend/.classpath
 backend/.project
 backend/.settings/
+.m2repo/
+backend/apache-maven-*/
+backend/maven.zip
+backend/application.properties
+run-logs/
 
 # Editor directories and files
 .vscode/*

@@ -24,6 +24,18 @@ import InvestmentGuide from "./pages/InvestmentGuide";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import HelpCenter from "./pages/HelpCenter";
+import AdminSignIn from "./pages/AdminSignIn";
+import AdminRegister from "./pages/AdminRegister";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import { useAuth } from "@/contexts/AuthContext";
+
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/admin-login" />;
+  if (!isAdmin) return <Navigate to="/dashboard" />;
+  return children;
+};
 
 const queryClient = new QueryClient();
 
@@ -53,6 +65,10 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/admin-login" element={<AdminSignIn />} />
+            <Route path="/admin-register" element={<AdminRegister />} />
+            <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

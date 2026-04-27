@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-const Register = () => {
+const AdminRegister = () => {
   const [step, setStep] = useState('register');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,7 +29,7 @@ const Register = () => {
       toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
       return;
     }
-    const result = await register(name, email, password);
+    const result = await register(name, email, password, 'ADMIN');
     if (result.success) {
       setPendingEmail(result.email || email);
       setStep('verify');
@@ -43,8 +43,8 @@ const Register = () => {
     e.preventDefault();
     const result = await confirmEmail(pendingEmail, verificationCode);
     if (result.success) {
-      toast({ title: 'Success', description: 'Email verified. Please sign in.' });
-      navigate('/signin');
+      toast({ title: 'Success', description: 'Admin Email verified. Please sign in.' });
+      navigate('/admin-login');
     } else {
       toast({ title: 'Error', description: result.message, variant: 'destructive' });
     }
@@ -61,17 +61,17 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--background)' }}>
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md border-primary/20 shadow-lg shadow-primary/5">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">MF</span>
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold">A</span>
             </div>
           </div>
-          <CardTitle className="text-2xl">{step === 'register' ? 'Create Account' : 'Verify Email'}</CardTitle>
+          <CardTitle className="text-2xl text-primary">{step === 'register' ? 'Admin Registration' : 'Verify Admin Email'}</CardTitle>
           <CardDescription>
             {step === 'register'
-              ? 'Join MutualFunds Pro to start investing'
+              ? 'Create a new administrator account'
               : `Enter the 6-digit code sent to ${pendingEmail}`}
           </CardDescription>
         </CardHeader>
@@ -94,8 +94,8 @@ const Register = () => {
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input id="confirmPassword" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirm password" required />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90">
-                Create Account
+              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:opacity-90">
+                Register as Admin
               </Button>
             </form>
           ) : (
@@ -111,7 +111,7 @@ const Register = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90">
+              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:opacity-90">
                 Verify Email
               </Button>
               <Button type="button" variant="outline" className="w-full" onClick={handleResend}>
@@ -120,8 +120,8 @@ const Register = () => {
             </form>
           )}
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Already have an account?{' '}
-            <Link to="/signin" className="text-primary hover:underline font-medium">Sign In</Link>
+            Already have an admin account?{' '}
+            <Link to="/admin-login" className="text-primary hover:underline font-medium">Sign In</Link>
           </p>
         </CardContent>
       </Card>
@@ -129,14 +129,4 @@ const Register = () => {
   );
 };
 
-export default Register;
-
-
-
-
-
-
-
-
-
-
+export default AdminRegister;

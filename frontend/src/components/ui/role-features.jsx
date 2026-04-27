@@ -19,7 +19,8 @@ const RoleFeatures = () => {
         "Investment recommendations",
         "Goal-based planning tools"
       ],
-      color: "primary"
+      color: "primary",
+      path: "/register"
     },
     {
       title: "For Financial Advisors",
@@ -52,7 +53,8 @@ const RoleFeatures = () => {
         "Content moderation",
         "System analytics and reports"
       ],
-      color: "success"
+      color: "success",
+      path: "/admin-login"
     },
     {
       title: "For Data Analysts",
@@ -128,7 +130,7 @@ const RoleFeatures = () => {
                   } hover:opacity-90`}
                   asChild
                 >
-                  <Link to="/investment-plans">Get Started as {role.title.replace('For ', '')}</Link>
+                  <Link to={role.path || "/investment-plans"}>Get Started as {role.title.replace('For ', '')}</Link>
                 </Button>
               </div>
             </Card>

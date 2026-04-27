@@ -3,6 +3,7 @@ package com.example.backend.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +52,11 @@ public class AppService {
     @Autowired
     private FundsHoldingRepository fundsHoldingRepository;
 
-    // Fallback in-memory storage for demo purposes
-    private final Map<String, String> userPasswords = new ConcurrentHashMap<>();
-    private final Map<String, UserProfile> userProfiles = new ConcurrentHashMap<>();
+    @Autowired
+    private MailService mailService;
+
     private volatile boolean dataInitialized = false;
+    private final SecureRandom secureRandom = new SecureRandom();
 
     public AppService() {
     }
@@ -67,9 +68,21 @@ public class AppService {
         try {
             // Initialize mock data in database
             if (userRepository.count() == 0) {
-                userRepository.save(new UserEntity("user@example.com", hashPassword("password123"), "Jane Investor"));
-                userRepository.save(new UserEntity("demo@example.com", hashPassword("demo1234"), "Demo User"));
+                userRepository.save(new UserEntity("user@example.com", hashPassword("password123"), "Jane Investor", true, "INVESTOR"));
+                userRepository.save(new UserEntity("demo@example.com", hashPassword("demo1234"), "Demo User", true, "INVESTOR"));
+                userRepository.save(new UserEntity("admin@example.com", hashPassword("admin123"), "System Admin", true, "ADMIN"));
             }
+
+            if (userRepository.findByEmail("admin@example.com").isEmpty()) {
+                userRepository.save(new UserEntity("admin@example.com", hashPassword("admin123"), "System Admin", true, "ADMIN"));
+            }
+
+            userRepository.findAll().stream()
+                .filter(user -> !user.isEmailVerified() && user.getVerificationCode() == null)
+                .forEach(user -> {
+                    user.setEmailVerified(true);
+                    userRepository.save(user);
+                });
 
             if (fundRepository.count() == 0) {
                 fundRepository.save(createFundEntity(1, "Growth Equity Fund", "Large Cap", "₹156.78", "+18.5%", "+14.2%", "+12.8%", "High", true,
@@ -117,17 +130,17 @@ public class AppService {
         initializeMockDataIfNeeded();
         String email = request.getEmail().toLowerCase();
 
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new ApiException("Email is already registered");
-        }
-
         if (request.getPassword().length() < 6) {
             throw new ApiException("Password must be at least 6 characters long");
         }
 
-        UserEntity user = new UserEntity(email, hashPassword(request.getPassword()), request.getName());
+        UserEntity user = userRepository.findByEmail(email)
+            .map(existing -> preparePendingUser(existing, request))
+            .orElseGet(() -> preparePendingUser(new UserEntity(), request));
+
         userRepository.save(user);
-        return new AuthResponse(true, "Registration successful");
+        mailService.sendVerificationCode(user.getEmail(), user.getName(), user.getVerificationCode());
+        return new AuthResponse(true, "Verification code sent to your email", true, user.getEmail(), "VERIFY_EMAIL");
     }
 
     public AuthResponse login(String email, String password) {
@@ -142,8 +155,110 @@ public class AppService {
             throw new ApiException("Invalid email or password");
         }
 
-        UserProfile profile = new UserProfile(user.getId(), user.getEmail(), user.getName());
+        if (!user.isEmailVerified()) {
+            throw new ApiException("Please verify your email before signing in");
+        }
+
+        assignLoginOtp(user);
+        userRepository.save(user);
+        mailService.sendLoginOtp(user.getEmail(), user.getName(), user.getLoginOtp());
+
+        return new AuthResponse(true, "Login OTP sent to your email", false, user.getEmail(), "VERIFY_LOGIN_OTP");
+    }
+
+    public AuthResponse verifyEmail(String email, String code) {
+        initializeMockDataIfNeeded();
+        UserEntity user = userRepository.findByEmail(email.toLowerCase())
+            .orElseThrow(() -> new ApiException("Account not found"));
+
+        if (user.isEmailVerified()) {
+            return new AuthResponse(true, "Email is already verified");
+        }
+
+        if (user.getVerificationCode() == null || user.getVerificationCodeExpiresAt() == null) {
+            throw new ApiException("No verification code found. Please request a new one");
+        }
+
+        if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new ApiException("Verification code expired. Please request a new one");
+        }
+
+        if (!user.getVerificationCode().equals(code.trim())) {
+            throw new ApiException("Invalid verification code");
+        }
+
+        user.setEmailVerified(true);
+        user.setVerificationCode(null);
+        user.setVerificationCodeExpiresAt(null);
+        userRepository.save(user);
+
+        return new AuthResponse(true, "Email verified successfully");
+    }
+
+    public AuthResponse resendVerification(String email) {
+        initializeMockDataIfNeeded();
+        UserEntity user = userRepository.findByEmail(email.toLowerCase())
+            .orElseThrow(() -> new ApiException("Account not found"));
+
+        if (user.isEmailVerified()) {
+            return new AuthResponse(true, "Email is already verified");
+        }
+
+        assignVerificationCode(user);
+        userRepository.save(user);
+        mailService.sendVerificationCode(user.getEmail(), user.getName(), user.getVerificationCode());
+
+        return new AuthResponse(true, "A new verification code has been sent", true, user.getEmail(), "VERIFY_EMAIL");
+    }
+
+    public AuthResponse verifyLoginOtp(String email, String otp) {
+        initializeMockDataIfNeeded();
+        UserEntity user = userRepository.findByEmail(email.toLowerCase())
+            .orElseThrow(() -> new ApiException("Account not found"));
+
+        validateOtp(user.getLoginOtp(), user.getLoginOtpExpiresAt(), otp, "Login OTP");
+
+        user.setLoginOtp(null);
+        user.setLoginOtpExpiresAt(null);
+        userRepository.save(user);
+
+        UserProfile profile = new UserProfile(user.getId(), user.getEmail(), user.getName(), user.getRole());
         return new AuthResponse(true, "Login successful", profile);
+    }
+
+    public AuthResponse forgotPassword(String email) {
+        initializeMockDataIfNeeded();
+        UserEntity user = userRepository.findByEmail(email.toLowerCase())
+            .orElseThrow(() -> new ApiException("Account not found"));
+
+        if (!user.isEmailVerified()) {
+            throw new ApiException("Please verify your email before resetting the password");
+        }
+
+        assignPasswordResetOtp(user);
+        userRepository.save(user);
+        mailService.sendPasswordResetOtp(user.getEmail(), user.getName(), user.getPasswordResetOtp());
+
+        return new AuthResponse(true, "Password reset OTP sent to your email", false, user.getEmail(), "RESET_PASSWORD");
+    }
+
+    public AuthResponse resetPassword(String email, String otp, String newPassword) {
+        initializeMockDataIfNeeded();
+        if (newPassword == null || newPassword.length() < 6) {
+            throw new ApiException("Password must be at least 6 characters long");
+        }
+
+        UserEntity user = userRepository.findByEmail(email.toLowerCase())
+            .orElseThrow(() -> new ApiException("Account not found"));
+
+        validateOtp(user.getPasswordResetOtp(), user.getPasswordResetOtpExpiresAt(), otp, "Password reset OTP");
+
+        user.setPassword(hashPassword(newPassword));
+        user.setPasswordResetOtp(null);
+        user.setPasswordResetOtpExpiresAt(null);
+        userRepository.save(user);
+
+        return new AuthResponse(true, "Password reset successful. Please sign in.");
     }
 
     public List<Fund> getFunds() {
@@ -417,6 +532,54 @@ public class AppService {
 
     private String hashPassword(String rawPassword) {
         return Base64.getEncoder().encodeToString(rawPassword.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private UserEntity preparePendingUser(UserEntity user, RegisterRequest request) {
+        if (user.getId() != null && user.isEmailVerified()) {
+            throw new ApiException("Email is already registered");
+        }
+
+        user.setEmail(request.getEmail().toLowerCase());
+        user.setName(request.getName());
+        user.setPassword(hashPassword(request.getPassword()));
+        user.setEmailVerified(false);
+        user.setRole(request.getRole() != null && !request.getRole().trim().isEmpty() ? request.getRole() : "INVESTOR");
+        assignVerificationCode(user);
+        return user;
+    }
+
+    private void assignVerificationCode(UserEntity user) {
+        user.setVerificationCode(generateVerificationCode());
+        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(10));
+    }
+
+    private void assignLoginOtp(UserEntity user) {
+        user.setLoginOtp(generateVerificationCode());
+        user.setLoginOtpExpiresAt(LocalDateTime.now().plusMinutes(10));
+    }
+
+    private void assignPasswordResetOtp(UserEntity user) {
+        user.setPasswordResetOtp(generateVerificationCode());
+        user.setPasswordResetOtpExpiresAt(LocalDateTime.now().plusMinutes(10));
+    }
+
+    private String generateVerificationCode() {
+        int code = 100000 + secureRandom.nextInt(900000);
+        return String.valueOf(code);
+    }
+
+    private void validateOtp(String storedOtp, LocalDateTime expiresAt, String incomingOtp, String label) {
+        if (storedOtp == null || expiresAt == null) {
+            throw new ApiException(label + " not found. Please request a new one");
+        }
+
+        if (expiresAt.isBefore(LocalDateTime.now())) {
+            throw new ApiException(label + " expired. Please request a new one");
+        }
+
+        if (!storedOtp.equals(incomingOtp.trim())) {
+            throw new ApiException("Invalid OTP");
+        }
     }
 
     public List<FundsHolding> getFundsHoldings(Long userId) {
