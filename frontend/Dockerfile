@@ -9,9 +9,10 @@ COPY . ./
 RUN npm run build
 
 FROM nginx:stable-alpine
-# ENV PORT=80
+
 ENV API_PROXY_TARGET=mutual-fund-backend.railway.internal:8080
+
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/sh", "-c", "envsubst '$PORT $API_PROXY_TARGET' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
