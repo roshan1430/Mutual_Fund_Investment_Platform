@@ -5,6 +5,7 @@ public class UserProfile {
     private String email;
     private String name;
     private String role;
+    private boolean emailVerified;
 
     public UserProfile() {
     }
@@ -14,6 +15,14 @@ public class UserProfile {
         this.email = email;
         this.name = name;
         this.role = role;
+    }
+
+    public UserProfile(Long id, String email, String name, String role, boolean emailVerified) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.role = role;
+        this.emailVerified = emailVerified;
     }
 
     public Long getId() {
@@ -46,5 +55,13 @@ public class UserProfile {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 }

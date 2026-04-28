@@ -28,7 +28,7 @@ public class AdminController {
     @GetMapping("/users")
     public ResponseEntity<List<UserProfile>> getAllUsers() {
         List<UserProfile> profiles = userRepository.findAll().stream()
-            .map(u -> new UserProfile(u.getId(), u.getEmail(), u.getName(), u.getRole()))
+            .map(u -> new UserProfile(u.getId(), u.getEmail(), u.getName(), u.getRole(), u.isEmailVerified()))
             .collect(Collectors.toList());
         return ResponseEntity.ok(profiles);
     }

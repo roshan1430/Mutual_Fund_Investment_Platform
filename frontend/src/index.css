@@ -2,35 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: linear-gradient(135deg, hsl(260 100% 95%) 0%, hsl(300 100% 96%) 25%, hsl(340 100% 97%) 50%, hsl(20 100% 96%) 75%, hsl(60 100% 95%) 100%);
-    --foreground: 260 20% 20%;
+    --background: 206 45% 98%;
+    --foreground: 212 45% 14%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 212 42% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 212 42% 18%;
 
-    --primary: 260 100% 70%;
+    --primary: 198 88% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 260 100% 80%;
-    --primary-dark: 260 100% 60%;
+    --primary-light: 192 88% 58%;
+    --primary-dark: 211 82% 34%;
 
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 215 25% 27%;
+    --secondary: 196 48% 96%;
+    --secondary-foreground: 212 42% 18%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 195 33% 94%;
+    --muted-foreground: 215 20% 42%;
 
-    --accent: 142 76% 36%;
+    --accent: 165 83% 34%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 142 76% 46%;
+    --accent-light: 165 72% 44%;
 
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
@@ -41,48 +37,39 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 200 100% 70%;
+    --border: 200 30% 86%;
+    --input: 200 30% 88%;
+    --ring: 198 88% 45%;
 
-    /* Financial specific colors */
-    --financial-blue: 200 100% 70%;
+    --financial-blue: 198 88% 45%;
     --financial-green: 142 76% 36%;
     --financial-red: 0 84% 60%;
-    --financial-gray: 215 16% 47%;
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(260 100% 70%), hsl(300 100% 75%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
-    --gradient-hero: linear-gradient(135deg, hsl(260 100% 70%) 0%, hsl(300 100% 70%) 50%, hsl(340 100% 70%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(260 20% 98%) 100%);
-    
-    /* Shadows */
-    --shadow-card: 0 4px 6px -1px hsl(200 100% 70% / 0.1), 0 2px 4px -1px hsl(200 100% 70% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(200 100% 70% / 0.1), 0 4px 6px -2px hsl(200 100% 70% / 0.05);
-    --shadow-xl: 0 20px 25px -5px hsl(200 100% 70% / 0.1), 0 10px 10px -5px hsl(200 100% 70% / 0.04);
+    --financial-gray: 215 20% 42%;
 
-    --radius: 0.5rem;
+    --gradient-primary: linear-gradient(135deg, hsl(198 88% 45%), hsl(165 83% 34%));
+    --gradient-success: linear-gradient(135deg, hsl(165 83% 34%), hsl(148 70% 43%));
+    --gradient-hero: linear-gradient(135deg, hsl(211 82% 14%) 0%, hsl(196 70% 24%) 45%, hsl(24 95% 58%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(196 43% 97%) 100%);
+    --gradient-panel: linear-gradient(180deg, hsl(0 0% 100% / 0.96) 0%, hsl(196 55% 95% / 0.88) 100%);
+
+    --shadow-card: 0 16px 40px -22px hsl(205 70% 20% / 0.22);
+    --shadow-lg: 0 24px 52px -28px hsl(205 70% 20% / 0.26);
+    --shadow-xl: 0 40px 80px -34px hsl(205 70% 20% / 0.3);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 200 100% 70%;
+    --sidebar-ring: 198 88% 45%;
   }
 
   .dark {
-    --background: linear-gradient(135deg, hsl(260 80% 6%) 0%, hsl(300 70% 8%) 25%, hsl(340 60% 10%) 50%, hsl(20 70% 8%) 75%, hsl(60 80% 7%) 100%);
+    --background: 218 42% 8%;
     --foreground: 213 31% 91%;
 
     --card: 215 28% 17%;
@@ -91,10 +78,10 @@ All colors MUST be HSL.
     --popover: 215 28% 17%;
     --popover-foreground: 213 31% 91%;
 
-    --primary: 200 100% 70%;
+    --primary: 198 88% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 200 100% 80%;
-    --primary-dark: 200 100% 60%;
+    --primary-light: 192 88% 65%;
+    --primary-dark: 211 82% 40%;
 
     --secondary: 215 27% 22%;
     --secondary-foreground: 213 31% 91%;
@@ -102,9 +89,9 @@ All colors MUST be HSL.
     --muted: 215 27% 22%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 142 76% 36%;
+    --accent: 165 72% 44%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 142 76% 46%;
+    --accent-light: 165 72% 52%;
 
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
@@ -117,24 +104,23 @@ All colors MUST be HSL.
 
     --border: 215 27% 22%;
     --input: 215 27% 22%;
-    --ring: 200 100% 70%;
+    --ring: 198 88% 58%;
 
-    /* Financial specific colors for dark mode */
-    --financial-blue: 200 100% 70%;
+    --financial-blue: 198 88% 58%;
     --financial-green: 142 76% 36%;
     --financial-red: 0 84% 60%;
     --financial-gray: 215 20% 65%;
-    
-    /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(200 100% 70%), hsl(200 100% 80%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
-    --gradient-hero: linear-gradient(135deg, hsl(200 100% 70%) 0%, hsl(142 76% 36%) 100%);
+
+    --gradient-primary: linear-gradient(135deg, hsl(198 88% 58%), hsl(165 72% 44%));
+    --gradient-success: linear-gradient(135deg, hsl(165 72% 44%), hsl(148 70% 43%));
+    --gradient-hero: linear-gradient(135deg, hsl(213 60% 14%) 0%, hsl(190 65% 22%) 45%, hsl(24 84% 50%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(215 28% 17%) 0%, hsl(215 27% 22%) 100%);
-    
-    /* Dark mode shadows */
-    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -1px hsl(0 0% 0% / 0.2);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -2px hsl(0 0% 0% / 0.2);
-    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.3), 0 10px 10px -5px hsl(0 0% 0% / 0.2);
+    --gradient-panel: linear-gradient(180deg, hsl(215 28% 18% / 0.96) 0%, hsl(202 42% 18% / 0.9) 100%);
+
+    --shadow-card: 0 10px 30px -14px hsl(0 0% 0% / 0.45);
+    --shadow-lg: 0 22px 44px -22px hsl(0 0% 0% / 0.5);
+    --shadow-xl: 0 34px 70px -28px hsl(0 0% 0% / 0.55);
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -142,7 +128,7 @@ All colors MUST be HSL.
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 200 100% 70%;
+    --sidebar-ring: 198 88% 58%;
   }
 }
 
@@ -151,7 +137,24 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    background:
+      radial-gradient(circle at top left, hsl(194 90% 92%) 0, transparent 34%),
+      radial-gradient(circle at top right, hsl(33 100% 90%) 0, transparent 28%),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(197 50% 97%) 100%);
+    @apply text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.18);
+  }
+
+  #root {
+    min-height: 100vh;
   }
 }
