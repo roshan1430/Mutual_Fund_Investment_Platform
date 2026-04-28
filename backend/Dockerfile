@@ -10,6 +10,5 @@ WORKDIR /app
 
 COPY --from=builder /app/target/backend-0.0.1-SNAPSHOT.jar /app/app.jar
 
-ENV PORT=8080
-
+# ✅ IMPORTANT
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT -jar /app/app.jar"]
