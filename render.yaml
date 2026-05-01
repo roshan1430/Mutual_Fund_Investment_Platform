@@ -4,7 +4,7 @@ services:
     name: mutual-fund-backend
     runtime: docker
     dockerContext: ./backend
-    dockerfilePath: Dockerfile
+    dockerfilePath: backend/Dockerfile
     plan: free
     envVars:
       - key: SERVER_PORT
@@ -27,7 +27,7 @@ services:
     name: mutual-fund-frontend
     runtime: docker
     dockerContext: ./frontend
-    dockerfilePath: Dockerfile
+    dockerfilePath: frontend/Dockerfile
     plan: free
     envVars:
       - key: API_PROXY_TARGET
