@@ -1,0 +1,36 @@
+services:
+  # Backend Service
+  - type: web
+    name: mutual-fund-backend
+    runtime: docker
+    dockerContext: ./backend
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: SERVER_PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        sync: false # Required: jdbc:mysql://YOUR_DB_HOST:3306/mutual_fund_db
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      - key: APP_MAIL_FROM
+        sync: false
+
+  # Frontend Service
+  - type: web
+    name: mutual-fund-frontend
+    runtime: docker
+    dockerContext: ./frontend
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: API_PROXY_TARGET
+        value: mutual-fund-backend:8080
+      - key: VITE_API_BASE
+        value: /api
